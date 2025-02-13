@@ -6,21 +6,27 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type JenkinsJob struct {
+	JobPath          string `yaml:"job_path"`
+	ParameterizedJob bool   `yaml:"parameterized_job"`
+}
+
+type AllowedWebhook struct {
+	RepoName string       `yaml:"repo_name"`
+	RunJobs  []JenkinsJob `yaml:"run_jobs"`
+}
+
+type JenkinsConfig struct {
+	URL             string           `yaml:"url"`
+	User            string           `yaml:"user"`
+	Pass            string           `yaml:"pass"`
+	Token           string           `yaml:"token"`
+	AllowedWebhooks []AllowedWebhook `yaml:"allowed_webhooks"`
+}
+
 type Config struct {
-	ServerPort string `yaml:"server_port"`
-	Jenkins    struct {
-		URL             string `yaml:"url"`
-		User            string `yaml:"user"`
-		Pass            string `yaml:"pass"`
-		Token           string `yaml:"token"`
-		AllowedWebhooks []struct {
-			RepoName string `yaml:"repo_name"`
-			RunJobs  []struct {
-				JobPath          string `yaml:"job_path"`
-				ParameterizedJob bool   `yaml:"parameterized_job"`
-			} `yaml:"run_jobs"`
-		} `yaml:"allowed_webhooks"`
-	} `yaml:"jenkins"`
+	ServerPort string        `yaml:"server_port"`
+	Jenkins    JenkinsConfig `yaml:"jenkins"`
 }
 
 func LoadConfig(path string) (*Config, error) {
