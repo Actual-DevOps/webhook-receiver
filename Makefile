@@ -4,7 +4,7 @@ APP=webhook-receiver
 GROUP=actual-devops
 VERSION=$(shell cat version)
 DOCKER_REGISTRY=ghcr.io
-GOLANG_VERSION=1.22
+GOLANG_VERSION=1.22.2
 
 BUILD_CMD='GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o webhook-receiver'
 

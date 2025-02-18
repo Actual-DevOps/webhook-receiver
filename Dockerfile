@@ -8,9 +8,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN go mod tidy
+# RUN go mod tidy
 
-RUN CGO_ENABLED=0 go build -o webhook-receiver
+RUN go mod download && ${BUILD_CMD}
 
 FROM alpine:3.21.2
 
