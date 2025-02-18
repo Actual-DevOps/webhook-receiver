@@ -11,7 +11,7 @@ import (
 	"github.com/elbars/webhook_receiver/internal/models"
 )
 
-func HandleGiteaWebhook(cfg *config.Config)  http.HandlerFunc {
+func HandleGiteaWebhook(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var payload models.WebhookPayload
 		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -24,7 +24,11 @@ func HandleGiteaWebhook(cfg *config.Config)  http.HandlerFunc {
 		slog.Info("Received webhook from repository FullName: " + payload.Repository.FullName)
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Webhook received"))
+		_, err := w.Write([]byte("Webhook received"))
+
+		if err != nil {
+			slog.Error(err.Error())
+		}
 
 		for _, webhook := range cfg.Jenkins.AllowedWebhooks {
 			if webhook.RepoName == payload.Repository.FullName {
