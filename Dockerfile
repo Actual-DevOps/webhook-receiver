@@ -8,8 +8,6 @@ WORKDIR /app
 
 COPY . .
 
-# RUN go mod tidy
-
 RUN go mod download && ${BUILD_CMD}
 
 FROM alpine:3.21.2
