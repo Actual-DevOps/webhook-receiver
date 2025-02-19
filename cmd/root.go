@@ -18,7 +18,7 @@ func wrapHelpFunctionWithExit(cmd *cobra.Command) {
 
 func NewRootCommand() *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:   "go run main.go",
+		Use:   "./webhook_receiver -c config/config.yaml",
 		Short: "Path to config",
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
