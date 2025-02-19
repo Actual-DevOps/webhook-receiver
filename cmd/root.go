@@ -1,36 +1,44 @@
 package cmd
 
 import (
-	"os"
-
+	"fmt"
+	"github.com/elbars/webhook_receiver/internal/config"
+	"github.com/elbars/webhook_receiver/internal/handlers"
 	"github.com/spf13/cobra"
+	"log/slog"
+	"net/http"
+	"os"
 )
 
-var configPath string
+var rootCmd = &cobra.Command{
+	Use:   "webhook_receiver",
+	Short: "Start webhook receiver server",
+	Run: func(cmd *cobra.Command, args []string) {
+		configPath, _ := cmd.Flags().GetString("config")
 
-func wrapHelpFunctionWithExit(cmd *cobra.Command) {
-	helpFunc := cmd.HelpFunc()
-	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
-		helpFunc(cmd, args)
-		os.Exit(0)
-	})
+		cfg, err := config.LoadConfig(configPath)
+
+		if err != nil {
+			slog.Error("Failed to load config: " + err.Error())
+			os.Exit(1)
+		}
+
+		serverPort := fmt.Sprintf(":%s", cfg.ServerPort)
+
+		http.HandleFunc("/webhook/gitea", handlers.HandleGiteaWebhook(cfg))
+
+		slog.Info("Webhook server is running on " + serverPort)
+
+		if err := http.ListenAndServe(serverPort, nil); err != nil {
+			slog.Error("Failed to start server: " + err.Error())
+			os.Exit(1)
+		}
+
+	},
 }
 
-func NewRootCommand() *cobra.Command {
-	rootCmd := &cobra.Command{
-		Use:   "./webhook_receiver -c config/config.yaml",
-		Short: "Path to config",
-		Run:   func(cmd *cobra.Command, args []string) {},
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
 	}
-
-	wrapHelpFunctionWithExit(rootCmd)
-
-	defaultConfigPath := "config/config.yaml"
-	rootCmd.Flags().StringVarP(&configPath, "config", "c", defaultConfigPath, "Config path")
-
-	return rootCmd
-}
-
-func GetConfigPath() string {
-	return configPath
 }
