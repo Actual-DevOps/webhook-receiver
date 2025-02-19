@@ -4,5 +4,5 @@ var configFile string
 
 func init() {
 	defaultConfigPath := "config/config.yaml"
-  	rootCmd.Flags().StringVarP(&configFile, "config", "c", defaultConfigPath, "Config path")
+	rootCmd.Flags().StringVarP(&configFile, "config", "c", defaultConfigPath, "Config path")
 }
