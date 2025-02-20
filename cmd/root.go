@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/elbars/webhook_receiver/internal/config"
 	"github.com/elbars/webhook_receiver/internal/handlers"
 	"github.com/spf13/cobra"
@@ -13,7 +12,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "webhook_receiver",
 	Short: "Start webhook receiver server",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		configPath, _ := cmd.Flags().GetString("config")
 
 		cfg, err := config.LoadConfig(configPath)
@@ -23,7 +22,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		serverPort := fmt.Sprintf(":%s", cfg.ServerPort)
+		serverPort := ":" + cfg.ServerPort
 
 		http.HandleFunc("/webhook/gitea", handlers.HandleGiteaWebhook(cfg))
 
@@ -33,12 +32,11 @@ var rootCmd = &cobra.Command{
 			slog.Error("Failed to start server: " + err.Error())
 			os.Exit(1)
 		}
-
 	},
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		slog.Error(err.Error())
 	}
 }
