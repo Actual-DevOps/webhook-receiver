@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/elbars/webhook_receiver/internal/config"
-	"github.com/elbars/webhook_receiver/internal/handlers"
+	"github.com/Actual-DevOps/webhook-receiver/internal/config"
+	"github.com/Actual-DevOps/webhook-receiver/internal/handlers"
 	"github.com/spf13/cobra"
 	"log/slog"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "webhook_receiver",
+	Use:   "webhook-receiver",
 	Short: "Start webhook receiver server",
 	Run: func(cmd *cobra.Command, _ []string) {
 		configPath, err := cmd.Flags().GetString("config")

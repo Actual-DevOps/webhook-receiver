@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/elbars/webhook_receiver/cmd"
+	"github.com/Actual-DevOps/webhook-receiver/cmd"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/elbars/webhook_receiver
+module github.com/Actual-DevOps/webhook-receiver
 
 go 1.22.2
 
