@@ -7,8 +7,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/elbars/webhook_receiver/internal/config"
-	"github.com/elbars/webhook_receiver/internal/models"
+	"github.com/Actual-DevOps/webhook-receiver/internal/config"
+	"github.com/Actual-DevOps/webhook-receiver/internal/models"
 )
 
 func HandleGiteaWebhook(cfg *config.Config) http.HandlerFunc {

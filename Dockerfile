@@ -22,7 +22,7 @@ RUN apk --no-cache add ca-certificates \
     && chown -R app:app /app \
     && rm -rf /var/cache/apk/*
 
-COPY --from=builder /app/webhook-receiver /app/webhook-receiver
+COPY --from=builder /app/webhook-receiver .
 
 EXPOSE 8081
 
