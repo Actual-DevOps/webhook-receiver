@@ -13,7 +13,7 @@ type Repository struct {
 	URL      string `json:"html_url"`
 }
 
-type Commit []struct {
+type Commit struct {
 	ID      string `json:"id"`
 	Message string `json:"message"`
 	Author  Author `json:"author"`
