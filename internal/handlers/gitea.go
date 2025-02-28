@@ -27,6 +27,7 @@ func HandleGiteaWebhook(cfg *config.Config) http.HandlerFunc {
 		slog.Info("Payload data",
 			slog.String("repository_name", payload.Repository.Name),
 			slog.String("repository_FullName", payload.Repository.FullName),
+			slog.String("repository_Owner", payload.Repository.Owner.Login),
 		)
 
 		w.WriteHeader(http.StatusOK)
