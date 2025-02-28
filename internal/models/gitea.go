@@ -10,10 +10,15 @@ type WebhookPayload struct {
 type Repository struct {
 	Name     string `json:"name"`
 	FullName string `json:"full_name"`
+	Owner    Owner  `json:"owner"`
 	URL      string `json:"html_url"`
 }
 
-type Commit []struct {
+type Owner struct {
+	Login string `json:"login"`
+}
+
+type Commit struct {
 	ID      string `json:"id"`
 	Message string `json:"message"`
 	Author  Author `json:"author"`

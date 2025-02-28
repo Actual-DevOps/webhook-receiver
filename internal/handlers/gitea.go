@@ -8,20 +8,27 @@ import (
 	"net/http"
 
 	"github.com/Actual-DevOps/webhook-receiver/internal/config"
+	"github.com/Actual-DevOps/webhook-receiver/internal/logging"
 	"github.com/Actual-DevOps/webhook-receiver/internal/models"
 )
 
 func HandleGiteaWebhook(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var payload models.WebhookPayload
+
+		logging.LogRequest(r, "gitea")
+
 		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 			http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
-
+			slog.Error(err.Error())
 			return
 		}
 
-		slog.Info("Received webhook from repository: " + payload.Repository.Name)
-		slog.Info("Received webhook from repository FullName: " + payload.Repository.FullName)
+		slog.Info("Payload data",
+			slog.String("repository_name", payload.Repository.Name),
+			slog.String("repository_FullName", payload.Repository.FullName),
+			slog.String("repository_Owner", payload.Repository.Owner.Login),
+		)
 
 		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte("Webhook received"))
