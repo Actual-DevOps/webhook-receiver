@@ -1,0 +1,20 @@
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  config.hcl: |
+    vault {
+      vault_agent_token_file = "/vault/.vault-token"
+      retry {
+        backoff = "1s"
+      }
+    }
+    template {
+    contents = <<EOH
+      {{ .Values.config | nindent 4 }}
+      EOH
+      destination = "/vault/secrets/config.yaml"
+    }
