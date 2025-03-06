@@ -29,6 +29,6 @@ go.work.sum
 # env file
 .env
 
-# values
+# helm
 helm/values_override.yaml
-
+webhook-receiver-*.tgz
