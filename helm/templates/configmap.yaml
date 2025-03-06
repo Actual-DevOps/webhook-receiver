@@ -1,0 +1,27 @@
+
+---
+{{ if  or (ne .Values.configMap.config "")  (ne .Values.configMap.configTemplate "") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+{{- if .Values.configMap.configTemplate }}
+  config.hcl: |
+    vault {
+      vault_agent_token_file = "/vault/.vault-token"
+      retry {
+        backoff = "1s"
+      }
+    }
+    template {
+    contents = <<EOH
+      {{ .Values.configMap.configTemplate | nindent 4 }}
+      EOH
+      destination = "{{ .Values.configMap.configPath }}"
+    }
+{{ else if .Values.configMap.config }}
+  config.yaml: |
+  {{- .Values.configMap.config | nindent 4 }}
+{{ end }}
+{{ end }}
