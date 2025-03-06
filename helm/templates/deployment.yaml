@@ -13,10 +13,18 @@ spec:
       {{- include "webhook-receiver.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+    {{- if or (.Values.podAnnotations) (.Values.configMap.annotations ) }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- if .Values.configMap.configTemplate }}
+        vault.security.banzaicloud.io/vault-ct-configmap: {{ .Release.Name }}-configmap
+      {{- with .Values.configMap.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
       labels:
         {{- include "webhook-receiver.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
@@ -37,7 +45,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            {{- toYaml .Values.command | nindent 12 }}
+            ["./webhook-receiver", "--config", "{{ .Values.configMap.configPath }}"]
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -48,14 +56,28 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
+    {{- if or (.Values.volumes) (.Values.configMap.configTemplate ) }}
           volumeMounts:
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+          {{- if .Values.configMap.configTemplate }}
+            - name: config-volume
+              mountPath: {{ .Values.configMap.configPath }}
+              subPath: config.yaml
+          {{- end }}
+    {{- end }}
+    {{- if or (.Values.volumes) (.Values.configMap.configTemplate ) }}
       volumes:
+      {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- if .Values.configMap.configTemplate }}
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-config
+    {{- end }}
+    {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

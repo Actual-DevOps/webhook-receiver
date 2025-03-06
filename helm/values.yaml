@@ -26,6 +26,7 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
+
 podLabels: {}
 
 podSecurityContext: {}
@@ -87,20 +88,43 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-command: ["./webhook-receiver", "--config", "/app/config/config.yaml"]
-
-config: |
-  # server_port: 8081
-  # jenkins:
-  #   url: "https://jenkins.example.com"
-  #   user: "mylogin"
-  #   pass: "mypass"
-  #   token: "myjobtoken"
-  #   allowed_webhooks:
-  #     - repo_name: "repo/repo-sandbox"
-  #       run_jobs:
-  #         - job_path: "job/Sandbox/job/playground/job/myjobname"
-  #           parameterized_job: true
+configMap:
+  configPath: "/app/config/config.yaml"
+# See https://bank-vaults.dev/ for configTemplate
+  configTemplate: ""
+  # configTemplate: |
+  #     server_port: 8081
+  #     jenkins:
+  #       url: "https://jenkins.example.com"
+  #     {{- with secret "test/data/foo" }}
+  #       user: {{ .Data.data.mylogin }}
+  #       pass: {{ .Data.data.mypass }}
+  #       token: {{ .Data.data.myjobtoken }}
+  #     {{ end }}
+  #       allowed_webhooks:
+  #         - repo_name: "repo/repo-sandbox"
+  #           run_jobs:
+  #             - job_path: "job/Sandbox/job/playground/job/myjobname"
+  #               parameterized_job: true
+  annotations:
+    vault.security.banzaicloud.io/vault-addr: "https://vault.example.com"
+    vault.security.banzaicloud.io/vault-role: "sandbox"
+    vault.security.banzaicloud.io/vault-skip-verify: "false"
+    vault.security.banzaicloud.io/vault-path: "vault"
+    vault.security.banzaicloud.io/run-as-user: "100"
+  config: ""
+  # config: |
+  #   server_port: 8081
+  #   jenkins:
+  #     url: "https://jenkins.example.com"
+  #     user: "mylogin"
+  #     pass: "mypass"
+  #     token: "myjobtoken"
+  #     allowed_webhooks:
+  #       - repo_name: "repo/repo-sandbox"
+  #         run_jobs:
+  #           - job_path: "job/Sandbox/job/playground/job/myjobname"
+  #             parameterized_job: true
 
 # Additional volumes on the output Deployment definition.
 volumes: []
@@ -110,10 +134,7 @@ volumes: []
 #     optional: false
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts:
-  - name: config-volume
-    mountPath: /app/config/config.yaml
-    subPath: config.yaml
+volumeMounts: []
 # - name: foo
 #   mountPath: "/etc/foo"
 #   readOnly: true
