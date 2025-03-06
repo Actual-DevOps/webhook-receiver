@@ -2,7 +2,7 @@
 
 APP=webhook-receiver
 GROUP=actual-devops
-VERSION=$(shell cat version)
+VERSION=$(shell cat version)-1
 DOCKER_REGISTRY=ghcr.io
 GOLANG_VERSION=1.22.2
 

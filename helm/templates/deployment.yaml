@@ -56,26 +56,26 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-    {{- if or (.Values.volumes) (.Values.configMap.configTemplate ) }}
+    {{- if or (.Values.volumes) (.Values.configMap.config ) }}
           volumeMounts:
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.configMap.configTemplate }}
+          {{- if .Values.configMap.config }}
             - name: config-volume
               mountPath: {{ .Values.configMap.configPath }}
               subPath: config.yaml
           {{- end }}
     {{- end }}
-    {{- if or (.Values.volumes) (.Values.configMap.configTemplate ) }}
+    {{- if or (.Values.volumes) (.Values.configMap.config ) }}
       volumes:
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if .Values.configMap.configTemplate }}
+    {{- if .Values.configMap.config }}
         - name: config-volume
           configMap:
-            name: {{ .Release.Name }}-config
+            name: {{ .Release.Name }}-configmap
     {{- end }}
     {{- end }}
       {{- with .Values.nodeSelector }}

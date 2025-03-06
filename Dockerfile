@@ -16,7 +16,7 @@ WORKDIR /app
 
 RUN apk --no-cache add ca-certificates \
     && update-ca-certificates \
-    && addgroup -g 100 app \
+    && addgroup -g 99 app \
     && adduser -s /dev/false -u 100 -D -G app app \
     && mkdir -p /app/config \
     && chown -R app:app /app \
